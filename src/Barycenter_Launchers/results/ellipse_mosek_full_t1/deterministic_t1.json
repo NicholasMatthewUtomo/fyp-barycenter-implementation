@@ -1,0 +1,66 @@
+{
+  "created_utc": "2026-10-15T16:56:02.236609+00:00",
+  "environment": {
+    "python": "3.12.4",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "gurobipy": "13.0.3",
+    "matplotlib": "3.8.4"
+  },
+  "input_sha256": "8c292cebe505b98e7e8c45b5ae16ed9624d4c9bc1befe376ef2f8d0e48b7ab49",
+  "input_file": "input_ellipse_data.pkl",
+  "objective_convention": "mean_i W2_squared(barycenter, marginal_i)",
+  "smoke_reduced_data": false,
+  "plot_convention": "Black support scatter for z > 1e-8; NPZ retains all masses.",
+  "solver": "mosek",
+  "solver_params": {
+    "Threads": 4
+  },
+  "status": "new_optimization",
+  "code_sha256": "f7027f7cf0a10322314309118e848326c6d599b2b63824f852ed374290f513a7",
+  "paper_algorithm": 4,
+  "implementation": "algo2_W2_subset_enumeration",
+  "t": 1,
+  "name": "deterministic_t1",
+  "candidate_atoms": 1110,
+  "active_atoms_threshold_1e_8": 241,
+  "total_mass": 1.0000000059902594,
+  "minimum_mass": -1.8298268649425168e-09,
+  "arrays": "deterministic_t1.npz",
+  "figure": "deterministic_t1.png",
+  "objective": 0.026734083758927038,
+  "runtime": 262.48003697395325,
+  "subsets_zero_based": [
+    [
+      0
+    ],
+    [
+      1
+    ],
+    [
+      2
+    ],
+    [
+      3
+    ],
+    [
+      4
+    ],
+    [
+      5
+    ],
+    [
+      6
+    ],
+    [
+      7
+    ],
+    [
+      8
+    ],
+    [
+      9
+    ]
+  ]
+}

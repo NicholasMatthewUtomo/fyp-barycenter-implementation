@@ -43,7 +43,7 @@ To classify **new** models, the main menu's all-experiments option wires them au
 
 ## Experiment settings
 
-**Ellipses:** the full option runs deterministic t=1 and t=2, then ten sampled t=1 runs with seeds 0–9. The historical ten-seed sequence was not recovered. The exact reference is drawn from its saved arrays; the costly independent reference solver is not invoked.
+**Ellipses:** MOSEK is the default LP solver because it handles the full sparse model without Gurobi's size-limited license restriction. Gurobi remains selectable. The full option runs deterministic t=1 and t=2, then ten sampled t=1 runs with seeds 0–9. The historical ten-seed sequence was not recovered. The exact reference is drawn from its saved arrays; the costly independent reference solver is not invoked. MOSEK selection applies only to ellipses; MNIST and sign training still use Gurobi.
 
 **MNIST:** the default is the saved notebook's distinct-subset computation. You can explicitly choose the current manuscript's multiset definition. They differ at t=2, so outputs record the selected definition. The selected data are the notebook's first 50 training images per digit.
 
@@ -60,15 +60,13 @@ Three classes have twelve one-hour solver budgets, plus input preparation and mo
 
 ## Your configured environment
 
-All launchers use this existing interpreter:
+All launchers use this interpreter:
 
 ```text
-/Users/jiaqiwang/opt/anaconda3/bin/python
+/opt/anaconda3/bin/python
 ```
 
-Checked successfully: Python 3.8.3, NumPy 1.24.4, SciPy 1.10.1, Gurobi 11.0.3, OpenCV 4.12.0, Matplotlib 3.7.5, and Pillow 7.2.0. It runs through Rosetta on this Apple Silicon laptop, so new timings should be reported separately from the paper. Other installed environments are not selected because they lack dependencies or contain incompatible versions.
-
-The local Gurobi license check on September 14, 2026 reported an expiration date of **September 16, 2026**. Runs after expiry will need your license renewed. These launchers do not alter the license or your Python environments.
+MOSEK 11.2.6 is installed in this environment, and a licensed test LP solved successfully. The ellipse backend builds a sparse LP. These launchers do not install packages, change solver licenses, or alter Python environments.
 
 Keep `Barycenter_Launchers` beside `closing_gap_reproduction`; the launcher finds the code and data in that sibling folder. Missing archival notebooks do not prevent running: all current runtime scripts, helpers, and data matched the delivered manifest when checked.
 

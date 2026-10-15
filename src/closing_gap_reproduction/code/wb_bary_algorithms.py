@@ -39,6 +39,12 @@ except Exception:
     _HAS_GUROBI = False
 
 try:
+    import mosek
+    _HAS_MOSEK = True
+except Exception:
+    _HAS_MOSEK = False
+
+try:
     from scipy.optimize import linprog
     _HAS_SCIPY = True
 except Exception:
@@ -676,13 +682,88 @@ def solve_barycenter_lp_scipy(C_list: List[np.ndarray], measures: Sequence[Measu
         y_list.append(x[offsets[i]:offsets[i]+s*n_i].reshape(s, n_i))
     return z, y_list, res.fun, res
 
+def solve_barycenter_lp_mosek(C_list: List[np.ndarray], measures: Sequence[Measure],
+                              params: Optional[Dict[str,Union[int,float]]] = None):
+    if not _HAS_MOSEK: raise ImportError("mosek not available")
+    k = len(C_list); s = C_list[0].shape[0]; n_list = [Ci.shape[1] for Ci in C_list]
+    for Ci, m in zip(C_list, measures):
+        assert Ci.shape == (s, m.X.shape[0])
+
+    offsets = np.cumsum([0] + [s*n for n in n_list])
+    z_off = int(offsets[-1]); n_vars = z_off + s
+    n_cons = k*s + sum(n_list) + 1
+    with mosek.Env() as env:
+        with env.Task(0, 0) as task:
+            task.appendcons(n_cons)
+            task.appendvars(n_vars)
+            task.putvarboundlistconst(np.arange(n_vars, dtype=np.int32),
+                                      mosek.boundkey.lo, 0.0, 0.0)
+            task.putobjsense(mosek.objsense.minimize)
+            task.putintparam(mosek.iparam.optimizer, mosek.optimizertype.dual_simplex)
+            if params:
+                if "Threads" in params:
+                    task.putintparam(mosek.iparam.num_threads, int(params["Threads"]))
+                if "TimeLimit" in params:
+                    task.putdouparam(mosek.dparam.optimizer_max_time, float(params["TimeLimit"]))
+
+            for i, Ci in enumerate(C_list):
+                var_start = int(offsets[i])
+                var_stop = var_start + s*n_list[i]
+                task.putclist(np.arange(var_start, var_stop, dtype=np.int32),
+                              np.asarray(Ci, dtype=np.float64).reshape(-1) / k)
+
+            con_idx = 0
+            for i, n_i in enumerate(n_list):
+                for l in range(s):
+                    var_start = int(offsets[i]) + l*n_i
+                    row_vars = np.empty(n_i + 1, dtype=np.int32)
+                    row_vars[:-1] = np.arange(var_start, var_start + n_i, dtype=np.int32)
+                    row_vars[-1] = z_off + l
+                    row_vals = np.ones(n_i + 1, dtype=np.float64)
+                    row_vals[-1] = -1.0
+                    task.putarow(con_idx, row_vars, row_vals)
+                    task.putconbound(con_idx, mosek.boundkey.fx, 0.0, 0.0)
+                    con_idx += 1
+
+            for i, (n_i, meas) in enumerate(zip(n_list, measures)):
+                support_offsets = int(offsets[i]) + np.arange(s, dtype=np.int32)*n_i
+                for j, weight in enumerate(meas.w):
+                    task.putarow(con_idx, support_offsets + j, np.ones(s, dtype=np.float64))
+                    task.putconbound(con_idx, mosek.boundkey.fx, float(weight), float(weight))
+                    con_idx += 1
+
+            task.putarow(con_idx, np.arange(z_off, n_vars, dtype=np.int32),
+                         np.ones(s, dtype=np.float64))
+            task.putconbound(con_idx, mosek.boundkey.fx, 1.0, 1.0)
+            task.optimize()
+            status = task.getsolsta(mosek.soltype.bas)
+            if status != mosek.solsta.optimal:
+                raise RuntimeError(f"MOSEK status {status}")
+
+            z = np.empty(s, dtype=np.float64)
+            task.getxxslice(mosek.soltype.bas, z_off, n_vars, z)
+            y_list = []
+            for i, n_i in enumerate(n_list):
+                y = np.empty((s, n_i), dtype=np.float64)
+                start = int(offsets[i])
+                task.getxxslice(mosek.soltype.bas, start, start + s*n_i, y.reshape(-1))
+                y_list.append(y)
+            objective = task.getprimalobj(mosek.soltype.bas)
+
+    return z, y_list, objective, {"solver": "MOSEK", "status": str(status)}
+
 def solve_barycenter_lp(C_list: List[np.ndarray], measures: Sequence[Measure],
                         prefer: str = "gurobi", params: Optional[Dict[str,Union[int,float]]] = None):
-    if prefer == "gurobi" and _HAS_GUROBI: return solve_barycenter_lp_gurobi(C_list, measures, params)
-    if prefer == "scipy" and _HAS_SCIPY: return solve_barycenter_lp_scipy(C_list, measures)
-    if _HAS_GUROBI: return solve_barycenter_lp_gurobi(C_list, measures, params)
-    if _HAS_SCIPY: return solve_barycenter_lp_scipy(C_list, measures)
-    raise RuntimeError("No LP solver available. Install gurobipy or scipy.")
+    if prefer == "gurobi":
+        if _HAS_GUROBI: return solve_barycenter_lp_gurobi(C_list, measures, params)
+        raise ImportError("gurobipy not available")
+    if prefer == "mosek":
+        if _HAS_MOSEK: return solve_barycenter_lp_mosek(C_list, measures, params)
+        raise ImportError("mosek not available")
+    if prefer == "scipy":
+        if _HAS_SCIPY: return solve_barycenter_lp_scipy(C_list, measures)
+        raise ImportError("scipy not available")
+    raise ValueError(f"Unknown LP solver: {prefer}")
 
 
 # -------------------------- W2 candidate sets --------------------------------
@@ -973,7 +1054,7 @@ def algo1_W2_subset_sampling(measures: Sequence[Measure], t: int, prefer_solver:
     print("cost_time",time.time()-t0)
     z, y_list, obj, model = solve_barycenter_lp(C_list, measures, prefer=prefer_solver, params=params)
     return dict(algorithm="Algo1_W2_subset_sampling", z=z, S=S_T, T=T, objective=obj,
-                runtime=time.time()-t0, solver=("Gurobi" if _HAS_GUROBI else "SciPy"))
+                runtime=time.time()-t0, solver={"gurobi": "Gurobi", "mosek": "MOSEK", "scipy": "SciPy"}[prefer_solver])
 
 def algo2_W2_subset_enumeration(measures: Sequence[Measure], t: int, prefer_solver: str = "gurobi",
                                 params: Optional[Dict[str,Union[int,float]]] = None,
@@ -987,7 +1068,7 @@ def algo2_W2_subset_enumeration(measures: Sequence[Measure], t: int, prefer_solv
     print("cost_time",time.time()-t0)
     z, y_list, obj, model = solve_barycenter_lp(C_list, measures, prefer=prefer_solver, params=params)
     return dict(algorithm="Algo2_W2_subset_enumeration", z=z, S=S_t, used_T=used_T, objective=obj,
-                runtime=time.time()-t0, solver=("Gurobi" if _HAS_GUROBI else "SciPy"))
+                runtime=time.time()-t0, solver={"gurobi": "Gurobi", "mosek": "MOSEK", "scipy": "SciPy"}[prefer_solver])
     
 def algo2_W2_subset_enumeration_cg(measures: Sequence[Measure], t: int, prefer_solver: str = "gurobi",
                                 params: Optional[Dict[str,Union[int,float]]] = None,
@@ -1027,7 +1108,7 @@ def algo3_W1_subspace_sampling(measures: Sequence[Measure], t: int, prefer_solve
     print("cost_time",time.time()-t0)
     z, y_list, obj, model = solve_barycenter_lp(C_list, measures, prefer=prefer_solver, params=params)
     return dict(algorithm="Algo3_W1_subspace_sampling", z=z, S=S_T, T=T, objective=obj,
-                runtime=time.time()-t0, solver=("Gurobi" if _HAS_GUROBI else "SciPy"))
+                runtime=time.time()-t0, solver={"gurobi": "Gurobi", "mosek": "MOSEK", "scipy": "SciPy"}[prefer_solver])
 
 def algo4_W1_subspace_enumeration(measures: Sequence[Measure], t: int, prefer_solver: str = "gurobi",
                                   params: Optional[Dict[str,Union[int,float]]] = None,
@@ -1041,7 +1122,7 @@ def algo4_W1_subspace_enumeration(measures: Sequence[Measure], t: int, prefer_so
     print("cost_time",time.time()-t0)
     z, y_list, obj, model = solve_barycenter_lp(C_list, measures, prefer=prefer_solver, params=params)
     return dict(algorithm="Algo4_W1_subspace_enumeration", z=z, S=S_t, used_T=used_T, objective=obj,
-                runtime=time.time()-t0, solver=("Gurobi" if _HAS_GUROBI else "SciPy"))
+                runtime=time.time()-t0, solver={"gurobi": "Gurobi", "mosek": "MOSEK", "scipy": "SciPy"}[prefer_solver])
 
 def two_stage_t1_then_local_t2(
     measures,

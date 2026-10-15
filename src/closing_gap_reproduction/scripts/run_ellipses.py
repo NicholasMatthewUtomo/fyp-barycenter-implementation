@@ -35,8 +35,8 @@ def parser():
     p.add_argument("--mode", choices=("deterministic", "randomized", "all", "reference"), default="deterministic")
     p.add_argument("--t", type=int, choices=(1, 2), default=1,
                    help="Subset size for deterministic mode; all runs deterministic t=1 and t=2.")
-    p.add_argument("--solver", choices=("gurobi", "scipy"), default="gurobi",
-                   help="Explicit solver choice, without silent fallback. Original SciPy backend is dense.")
+    p.add_argument("--solver", choices=("mosek", "gurobi", "scipy"), default="gurobi",
+                   help="Explicit solver choice, without silent fallback. SciPy builds a dense LP.")
     p.add_argument("--seeds", type=int, nargs="+", default=list(range(10)),
                    help="Seeds for randomized t=1; default 0..9 is a newly documented protocol.")
     p.add_argument("--input", type=Path, default=ROOT / "data/ellipses/input_ellipse_data.pkl")
@@ -44,9 +44,9 @@ def parser():
     p.add_argument("--output", type=Path, default=ROOT / "results/ellipses")
     p.add_argument("--inspect", action="store_true", help="Read data and print experiment sizes; no solve or output writes.")
     p.add_argument("--smoke", action="store_true", help="Use first three marginals and four atoms each; not a paper reproduction.")
-    p.add_argument("--threads", type=int, help="Optional Gurobi Threads setting; default leaves the solver default unchanged.")
-    p.add_argument("--time-limit", type=float, help="Optional Gurobi TimeLimit; solver must still reach OPTIMAL to save results.")
-    p.add_argument("--quiet", action="store_true", help="Suppress Gurobi optimizer log.")
+    p.add_argument("--threads", type=int, help="Optional solver thread limit; default leaves the solver default unchanged.")
+    p.add_argument("--time-limit", type=float, help="Optional solver time limit; solver must reach OPTIMAL to save results.")
+    p.add_argument("--quiet", action="store_true", help="Suppress optimizer output where supported.")
     return p
 
 
@@ -76,7 +76,7 @@ def sha256(path):
 
 def environment():
     result = {"python": platform.python_version(), "platform": platform.platform()}
-    for package in ("numpy", "scipy", "gurobipy", "matplotlib"):
+    for package in ("numpy", "scipy", "gurobipy", "mosek", "matplotlib"):
         try:
             result[package] = importlib.metadata.version(package)
         except importlib.metadata.PackageNotFoundError:
@@ -178,10 +178,11 @@ def render_reference(path, output, metadata):
 
 
 def ensure_solver(wb, solver, arrays, mode, t):
-    available = wb._HAS_GUROBI if solver == "gurobi" else wb._HAS_SCIPY
+    available = {"mosek": wb._HAS_MOSEK, "gurobi": wb._HAS_GUROBI,
+                 "scipy": wb._HAS_SCIPY}[solver]
     if not available:
         raise RuntimeError(f"Requested {solver} is unavailable; install it or explicitly choose another solver.")
-    if solver != "scipy":
+    if solver not in ("scipy",):
         return
     # The archived implementation allocates dense A_eq. A rigorous lower bound is
     # enough to reject the original ellipse experiment before any large allocation.
@@ -193,7 +194,7 @@ def ensure_solver(wb, solver, arrays, mode, t):
     if lower_bytes > 2_000_000_000:
         raise RuntimeError(
             f"The recovered SciPy backend builds dense A_eq, requiring at least {lower_bytes / 1e9:.1f} GB here. "
-            "Use --solver gurobi for the paper data, or --smoke --solver scipy for a small verification. "
+            "Use --solver mosek or --solver gurobi for the paper data, or --smoke --solver scipy for a small verification. "
             "No optimization was started."
         )
 
@@ -207,7 +208,7 @@ def main(argv=None):
     if args.time_limit is not None and args.time_limit <= 0:
         raise ValueError("--time-limit must be positive.")
     if args.solver == "scipy" and (args.threads is not None or args.time_limit is not None):
-        raise ValueError("--threads and --time-limit apply only to Gurobi.")
+        raise ValueError("--threads and --time-limit are available only for MOSEK and Gurobi.")
     if args.smoke and args.mode == "reference":
         raise ValueError("--smoke cannot be combined with --mode reference.")
     arrays = load_inputs(args.input)

@@ -1,0 +1,73 @@
+{
+  "status": "failed",
+  "started": "2026-10-16T00:39:15.710778",
+  "python": "/opt/anaconda3/bin/python",
+  "package": "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/closing_gap_reproduction",
+  "settings": {
+    "mode": "ellipse",
+    "digits": [
+      "0",
+      "1",
+      "2"
+    ],
+    "classes": [
+      "A",
+      "C",
+      "D"
+    ],
+    "rule": "notebook-subsets",
+    "ts": [
+      "1",
+      "2"
+    ],
+    "minutes": 60,
+    "ellipse": "t1"
+  },
+  "threads": 4,
+  "results": "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/Barycenter_Launchers/results/20261016_003915_709601_ellipse",
+  "jobs": [
+    {
+      "label": "ellipse_comparison",
+      "script": "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/closing_gap_reproduction/scripts/run_ellipses.py",
+      "args": [
+        "--mode",
+        "deterministic",
+        "--output",
+        "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/Barycenter_Launchers/results/20261016_003915_709601_ellipse/ellipses",
+        "--solver",
+        "gurobi",
+        "--threads",
+        "4",
+        "--t",
+        "1"
+      ],
+      "solver": true,
+      "status": "failed",
+      "started": "2026-10-16T00:39:15.714090",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "-u",
+        "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/Barycenter_Launchers/run_worker.py",
+        "--threads",
+        "4",
+        "--solver",
+        "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/closing_gap_reproduction/scripts/run_ellipses.py",
+        "--mode",
+        "deterministic",
+        "--output",
+        "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/Barycenter_Launchers/results/20261016_003915_709601_ellipse/ellipses",
+        "--solver",
+        "gurobi",
+        "--threads",
+        "4",
+        "--t",
+        "1"
+      ],
+      "log": "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/Barycenter_Launchers/results/20261016_003915_709601_ellipse/logs/01_ellipse_comparison.log",
+      "pid": 9731,
+      "exit_code": 1,
+      "finished": "2026-10-16T00:41:13.238615"
+    }
+  ],
+  "finished": "2026-10-16T00:41:13.240013"
+}

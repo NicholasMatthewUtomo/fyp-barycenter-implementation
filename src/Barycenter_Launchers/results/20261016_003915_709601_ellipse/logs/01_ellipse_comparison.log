@@ -1,0 +1,37 @@
+/opt/anaconda3/bin/python -u /Users/vincentcollinyennoto/Downloads/Barycenter_implementation/Barycenter_Launchers/run_worker.py --threads 4 --solver /Users/vincentcollinyennoto/Downloads/Barycenter_implementation/closing_gap_reproduction/scripts/run_ellipses.py --mode deterministic --output /Users/vincentcollinyennoto/Downloads/Barycenter_implementation/Barycenter_Launchers/results/20261016_003915_709601_ellipse/ellipses --solver gurobi --threads 4 --t 1
+Restricted license - for non-production use only - expires 2027-11-29
+Set parameter Threads to value 4
+Running deterministic t=1, solver=gurobi
+cost_length 10
+cost_time 0.0207211971282959
+Set parameter Threads to value 4
+Gurobi Optimizer version 13.0.3 build v13.0.3rc0 (mac64[arm] - Darwin 25.6.0 25G83)
+
+CPU model: Apple M2
+Thread count: 8 physical cores, 8 logical processors, using up to 4 threads
+
+Non-default parameters:
+Threads  4
+
+Traceback (most recent call last):
+  File "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/Barycenter_Launchers/run_worker.py", line 20, in <module>
+    runpy.run_path(str(a.script),run_name='__main__')
+  File "<frozen runpy>", line 286, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/closing_gap_reproduction/scripts/run_ellipses.py", line 307, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/closing_gap_reproduction/scripts/run_ellipses.py", line 272, in main
+    result = wb.algo2_W2_subset_enumeration(measures, t=t, seed=0,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/closing_gap_reproduction/code/wb_bary_algorithms.py", line 988, in algo2_W2_subset_enumeration
+    z, y_list, obj, model = solve_barycenter_lp(C_list, measures, prefer=prefer_solver, params=params)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/closing_gap_reproduction/code/wb_bary_algorithms.py", line 681, in solve_barycenter_lp
+    if prefer == "gurobi" and _HAS_GUROBI: return solve_barycenter_lp_gurobi(C_list, measures, params)
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vincentcollinyennoto/Downloads/Barycenter_implementation/closing_gap_reproduction/code/wb_bary_algorithms.py", line 144, in solve_barycenter_lp_gurobi
+    model.optimize()
+  File "src/gurobipy/_model.pyx", line 926, in gurobipy._model.Model.optimize
+gurobipy._exception.GurobiError: Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information

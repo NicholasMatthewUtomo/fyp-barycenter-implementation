@@ -14,7 +14,7 @@ import time
 
 HERE = Path(__file__).resolve().parent
 PACKAGE = HERE.parent / 'closing_gap_reproduction'
-PYTHON = Path('/usr/bin/python3')
+PYTHON = Path('/opt/anaconda3/bin/python')
 RUNS = HERE / 'results'
 THREADS = 4
 
@@ -51,6 +51,10 @@ def settings(mode, interactive):
             ('all','Full comparison: t=1, t=2, ten sampled runs, saved reference'),
             ('t1','Deterministic t=1 only'), ('t2','Deterministic t=2 only'),
             ('reference','Draw the saved reference and inputs only')], interactive=interactive)
+    if mode in ('ellipse','all') and opts['ellipse'] != 'reference':
+        opts['solver'] = choose('Ellipse LP solver', [
+            ('mosek','MOSEK (recommended; sparse LP)'),
+            ('gurobi','Gurobi')], default=1, interactive=interactive)
     if mode in ('mnist','all'):
         if mode == 'mnist':
             opts['digits'] = select_values('Digits', ['0','1','2'], interactive)
@@ -88,14 +92,15 @@ def build_jobs(opts, run):
     if mode in ('ellipse','all'):
         e = opts['ellipse']
         args = ['--mode', e if e in ('all','reference') else 'deterministic', '--output',run/'ellipses']
-        if e != 'reference': args += ['--solver','mosek','--threads',THREADS]
+        if e != 'reference': args += ['--solver',opts['solver'],'--threads',THREADS]
         if e in ('t1','t2'): args += ['--t',e[-1]]
-        add('ellipse_comparison','scripts/run_ellipses.py',args,e!='reference')
+        add('ellipse_comparison','scripts/run_ellipses.py',args,
+            e != 'reference' and opts['solver'] == 'gurobi')
     if mode in ('mnist','all'):
         for digit in opts['digits']:
             for t in opts['ts']:
                 add('mnist_digit{}_t{}'.format(digit,t),'scripts/run_mnist.py',
-                    ['--digit',digit,'--t',t,'--solver','mosek','--candidate-rule',opts['rule'],'--output',run/'mnist'])
+                    ['--digit',digit,'--t',t,'--solver','gurobi','--candidate-rule',opts['rule'],'--output',run/'mnist'])
     if mode in ('sign','all'):
         seconds = opts['minutes']*60
         for c in opts['classes']:
@@ -244,7 +249,7 @@ def main():
     if not PYTHON.is_file() or not (PACKAGE/'code/wb_bary_algorithms.py').is_file():
         parser.error('The configured Python or sibling closing_gap_reproduction package is missing.')
     print('\nWasserstein barycenter experiments — laptop launchers')
-    print('Python: '+str(PYTHON)+'  |  Gurobi 11.0.3  |  4 worker threads')
+    print('Python: '+str(PYTHON)+'  |  MOSEK/Gurobi ellipse solvers  |  4 worker threads')
     mode=args.mode
     if mode=='menu':
         mode=choose('What would you like to run?',[
