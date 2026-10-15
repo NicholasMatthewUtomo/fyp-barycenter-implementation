@@ -1,0 +1,23 @@
+figure_panel,dataset,method,t,objective,time_label_seconds,status
+2a,ellipse,exact reference,,0.02666,8865.03,paper caption; not freshly reproduced
+2b,ellipse,sampled best of ten,1,0.02709,17.46,paper caption; not freshly reproduced
+2c,ellipse,subset enumeration,1,0.02673,21.08,paper caption; not freshly reproduced
+2d,ellipse,subset enumeration,2,0.02667,212.44,paper caption; not freshly reproduced
+3a,MNIST 0,paper Algorithm 2,1,0.0132,556,paper caption; source uses distinct subsets
+3d,MNIST 0,paper Algorithm 2,2,0.0127,9213,paper caption; source uses distinct subsets
+3b,MNIST 1,paper Algorithm 2,1,0.0174,56,paper caption; source uses distinct subsets
+3e,MNIST 1,paper Algorithm 2,2,0.0169,1148,paper caption; source uses distinct subsets
+3c,MNIST 2,paper Algorithm 2,1,0.0279,253,paper caption; source uses distinct subsets
+3f,MNIST 2,paper Algorithm 2,2,0.0274,2716,paper caption; source uses distinct subsets
+4a,A,t1,1,0.00368,3600,paper stage-time label; excludes preprocessing/prior stages
+4b,A,t1,1,0.00358,7200,paper stage-time label; excludes preprocessing/prior stages
+4c,A,hybrid t2,2,0.00355,3600,paper stage-time label; excludes preprocessing/prior stages
+4d,A,hybrid t2,2,0.00348,7200,paper stage-time label; excludes preprocessing/prior stages
+5a,C,t1,1,0.0115,3600,paper stage-time label; excludes preprocessing/prior stages
+5b,C,t1,1,0.0115,7200,paper stage-time label; excludes preprocessing/prior stages
+5c,C,hybrid t2,2,0.0111,3600,paper stage-time label; excludes preprocessing/prior stages
+5d,C,hybrid t2,2,0.011,7200,paper stage-time label; excludes preprocessing/prior stages
+6a,D,t1,1,0.00957,3600,paper stage-time label; excludes preprocessing/prior stages
+6b,D,t1,1,0.00949,7200,paper stage-time label; excludes preprocessing/prior stages
+6c,D,hybrid t2,2,0.00917,3600,paper stage-time label; excludes preprocessing/prior stages
+6d,D,hybrid t2,2,0.00898,7200,paper stage-time label; excludes preprocessing/prior stages

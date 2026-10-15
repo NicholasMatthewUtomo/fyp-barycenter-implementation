@@ -1,0 +1,29 @@
+[
+  {
+    "digit": 0,
+    "k": 50,
+    "t": 2,
+    "subset_candidates": 1669,
+    "multiset_candidates": 1717,
+    "missing_from_subset": 48,
+    "sets_equal": false
+  },
+  {
+    "digit": 1,
+    "k": 50,
+    "t": 2,
+    "subset_candidates": 1353,
+    "multiset_candidates": 1399,
+    "missing_from_subset": 46,
+    "sets_equal": false
+  },
+  {
+    "digit": 2,
+    "k": 50,
+    "t": 2,
+    "subset_candidates": 1837,
+    "multiset_candidates": 1860,
+    "missing_from_subset": 23,
+    "sets_equal": false
+  }
+]

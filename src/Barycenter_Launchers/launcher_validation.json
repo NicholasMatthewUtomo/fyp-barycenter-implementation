@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "all_experiment_jobs": 21,
+  "warm_start_dependencies": "passed",
+  "repeated_control_c_cleanup": "passed",
+  "no_orphan_worker": true,
+  "checks_run": "four successful setup jobs; no full research runs"
+}

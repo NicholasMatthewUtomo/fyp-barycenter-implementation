@@ -1,0 +1,41 @@
+{
+  "experiment": "MNIST",
+  "paper_figure": 3,
+  "digit": 1,
+  "t": 1,
+  "k": 1,
+  "selection": "first k occurrences in training-set order",
+  "training_indices": [
+    3
+  ],
+  "positive_support_sizes": [
+    96
+  ],
+  "grid_domain": [
+    -1,
+    1
+  ],
+  "threshold": 1e-08,
+  "marginal_weights": "equal 1/k",
+  "candidate_grid_upper_bound": 784,
+  "candidate_rule": "notebook-subsets",
+  "measure_index_choice_count": 1,
+  "dense_scipy_Aeq_upper_bound_GiB": 0.49917614459991455,
+  "solver": "gurobi",
+  "paper_scale": false,
+  "mode": "fresh optimization",
+  "objective": 3.5668384888015685e-18,
+  "runtime_seconds": 1.1983892917633057,
+  "wall_seconds": 1.199778625,
+  "support_size": 96,
+  "active_support_size": 96,
+  "mass_sum": 0.9999999999999999,
+  "minimum_mass": 0.00046688065363291513,
+  "validation": "solver completed; historical paper runtime not asserted",
+  "versions": {
+    "numpy": "1.24.4",
+    "scipy": "1.10.1",
+    "Pillow": "7.2.0",
+    "gurobipy": "11.0.3"
+  }
+}

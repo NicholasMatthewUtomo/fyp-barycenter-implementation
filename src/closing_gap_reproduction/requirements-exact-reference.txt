@@ -1,0 +1,5 @@
+-r requirements.txt
+# Optional modified exact-reference solver only. Historical versions were not recorded.
+pulp
+scikit-learn
+shapely

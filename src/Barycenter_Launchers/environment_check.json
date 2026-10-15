@@ -1,0 +1,282 @@
+{
+  "checked_at_utc": "2026-09-15T03:09:02.732814+00:00",
+  "host_architecture": "arm64",
+  "scope": "Read-only Python/module import checks. No license modification, installation, or solver optimization.",
+  "environments": [
+    {
+      "executable": "/Users/jiaqiwang/opt/anaconda3/bin/python",
+      "python": "3.8.3 (default, Jul  2 2020, 11:26:31) \n[Clang 10.0.0 ]",
+      "machine": "x86_64",
+      "platform": "macOS-10.16-x86_64-i386-64bit",
+      "modules": {
+        "numpy": {
+          "ok": true,
+          "version": "1.24.4",
+          "file": "/Users/jiaqiwang/opt/anaconda3/lib/python3.8/site-packages/numpy/__init__.py"
+        },
+        "scipy": {
+          "ok": true,
+          "version": "1.10.1",
+          "file": "/Users/jiaqiwang/opt/anaconda3/lib/python3.8/site-packages/scipy/__init__.py"
+        },
+        "scipy.optimize": {
+          "ok": true,
+          "version": null,
+          "file": "/Users/jiaqiwang/opt/anaconda3/lib/python3.8/site-packages/scipy/optimize/__init__.py"
+        },
+        "scipy.spatial": {
+          "ok": true,
+          "version": null,
+          "file": "/Users/jiaqiwang/opt/anaconda3/lib/python3.8/site-packages/scipy/spatial/__init__.py"
+        },
+        "gurobipy": {
+          "ok": true,
+          "version": [
+            11,
+            0,
+            3
+          ],
+          "file": "/Users/jiaqiwang/opt/anaconda3/lib/python3.8/site-packages/gurobipy/__init__.py"
+        },
+        "cv2": {
+          "ok": true,
+          "version": "4.12.0",
+          "file": "/Users/jiaqiwang/opt/anaconda3/lib/python3.8/site-packages/cv2/__init__.py"
+        },
+        "PIL": {
+          "ok": true,
+          "version": "7.2.0",
+          "file": "/Users/jiaqiwang/opt/anaconda3/lib/python3.8/site-packages/PIL/__init__.py"
+        },
+        "matplotlib": {
+          "ok": true,
+          "version": "3.7.5",
+          "file": "/Users/jiaqiwang/opt/anaconda3/lib/python3.8/site-packages/matplotlib/__init__.py"
+        },
+        "matplotlib.pyplot": {
+          "ok": true,
+          "version": null,
+          "file": "/Users/jiaqiwang/opt/anaconda3/lib/python3.8/site-packages/matplotlib/pyplot.py"
+        }
+      },
+      "algorithm_import": {
+        "ok": true,
+        "has_gurobi": true
+      },
+      "returncode": 0,
+      "stderr": "",
+      "binary_file": "/Users/jiaqiwang/opt/anaconda3/bin/python: Mach-O 64-bit executable x86_64"
+    },
+    {
+      "executable": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/bin/python",
+      "python": "3.10.6 | packaged by conda-forge | (main, Aug 22 2022, 20:41:54) [Clang 13.0.1 ]",
+      "machine": "x86_64",
+      "platform": "macOS-15.6.1-x86_64-i386-64bit",
+      "modules": {
+        "numpy": {
+          "ok": true,
+          "version": "1.23.1",
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/lib/python3.10/site-packages/numpy/__init__.py"
+        },
+        "scipy": {
+          "ok": true,
+          "version": "1.11.1",
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/lib/python3.10/site-packages/scipy/__init__.py"
+        },
+        "scipy.optimize": {
+          "ok": true,
+          "version": null,
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/lib/python3.10/site-packages/scipy/optimize/__init__.py"
+        },
+        "scipy.spatial": {
+          "ok": true,
+          "version": null,
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/lib/python3.10/site-packages/scipy/spatial/__init__.py"
+        },
+        "gurobipy": {
+          "ok": true,
+          "version": [
+            12,
+            0,
+            3
+          ],
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/lib/python3.10/site-packages/gurobipy/__init__.py"
+        },
+        "cv2": {
+          "ok": false,
+          "error": "ModuleNotFoundError(\"No module named 'cv2'\")",
+          "traceback": "Traceback (most recent call last):\n  File \"<string>\", line 11, in <module>\n  File \"/Users/jiaqiwang/opt/anaconda3/envs/my_environment/lib/python3.10/importlib/__init__.py\", line 126, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n  File \"<frozen importlib._bootstrap>\", line 1050, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1027, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1004, in _find_and_load_unlocked\nModuleNotFoundError: No module named 'cv2'\n"
+        },
+        "PIL": {
+          "ok": true,
+          "version": "10.0.0",
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/lib/python3.10/site-packages/PIL/__init__.py"
+        },
+        "matplotlib": {
+          "ok": true,
+          "version": "3.7.2",
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/lib/python3.10/site-packages/matplotlib/__init__.py"
+        },
+        "matplotlib.pyplot": {
+          "ok": true,
+          "version": null,
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/lib/python3.10/site-packages/matplotlib/pyplot.py"
+        }
+      },
+      "algorithm_import": {
+        "ok": true,
+        "has_gurobi": true
+      },
+      "returncode": 0,
+      "stderr": "Fontconfig error: No writable cache directories\nFontconfig error: No writable cache directories\nFontconfig error: No writable cache directories\n",
+      "binary_file": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/bin/python: Mach-O 64-bit executable x86_64"
+    },
+    {
+      "executable": "/opt/anaconda3/bin/python",
+      "python": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 11:23:37) [Clang 14.0.6 ]",
+      "machine": "arm64",
+      "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+      "modules": {
+        "numpy": {
+          "ok": true,
+          "version": "2.1.3",
+          "file": "/opt/anaconda3/lib/python3.13/site-packages/numpy/__init__.py"
+        },
+        "scipy": {
+          "ok": true,
+          "version": "1.15.3",
+          "file": "/opt/anaconda3/lib/python3.13/site-packages/scipy/__init__.py"
+        },
+        "scipy.optimize": {
+          "ok": true,
+          "version": null,
+          "file": "/opt/anaconda3/lib/python3.13/site-packages/scipy/optimize/__init__.py"
+        },
+        "scipy.spatial": {
+          "ok": true,
+          "version": null,
+          "file": "/opt/anaconda3/lib/python3.13/site-packages/scipy/spatial/__init__.py"
+        },
+        "gurobipy": {
+          "ok": false,
+          "error": "ModuleNotFoundError(\"No module named 'gurobipy'\")",
+          "traceback": "Traceback (most recent call last):\n  File \"<string>\", line 11, in <module>\n    module = importlib.import_module(name)\n  File \"/opt/anaconda3/lib/python3.13/importlib/__init__.py\", line 88, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1324, in _find_and_load_unlocked\nModuleNotFoundError: No module named 'gurobipy'\n"
+        },
+        "cv2": {
+          "ok": false,
+          "error": "ModuleNotFoundError(\"No module named 'cv2'\")",
+          "traceback": "Traceback (most recent call last):\n  File \"<string>\", line 11, in <module>\n    module = importlib.import_module(name)\n  File \"/opt/anaconda3/lib/python3.13/importlib/__init__.py\", line 88, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1324, in _find_and_load_unlocked\nModuleNotFoundError: No module named 'cv2'\n"
+        },
+        "PIL": {
+          "ok": true,
+          "version": "11.1.0",
+          "file": "/opt/anaconda3/lib/python3.13/site-packages/PIL/__init__.py"
+        },
+        "matplotlib": {
+          "ok": true,
+          "version": "3.10.0",
+          "file": "/opt/anaconda3/lib/python3.13/site-packages/matplotlib/__init__.py"
+        },
+        "matplotlib.pyplot": {
+          "ok": true,
+          "version": null,
+          "file": "/opt/anaconda3/lib/python3.13/site-packages/matplotlib/pyplot.py"
+        }
+      },
+      "algorithm_import": {
+        "ok": true,
+        "has_gurobi": false
+      },
+      "returncode": 0,
+      "stderr": "Fontconfig error: No writable cache directories\nFontconfig error: No writable cache directories\nFontconfig error: No writable cache directories\nMatplotlib is building the font cache; this may take a moment.\n",
+      "binary_file": "/opt/anaconda3/bin/python: Mach-O 64-bit executable arm64"
+    },
+    {
+      "executable": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/bin/python",
+      "python": "3.11.14 | packaged by conda-forge | (main, Oct 13 2025, 14:22:43) [Clang 19.1.7 ]",
+      "machine": "x86_64",
+      "platform": "macOS-15.6.1-x86_64-i386-64bit",
+      "modules": {
+        "numpy": {
+          "ok": true,
+          "version": "2.2.6",
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/numpy/__init__.py"
+        },
+        "scipy": {
+          "ok": true,
+          "version": "1.11.4",
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/scipy/__init__.py"
+        },
+        "scipy.optimize": {
+          "ok": false,
+          "error": "ImportError(\"cannot import name 'Inf' from 'numpy' (/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/numpy/__init__.py)\")",
+          "traceback": "Traceback (most recent call last):\n  File \"<string>\", line 11, in <module>\n  File \"/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/importlib/__init__.py\", line 126, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1204, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1176, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1147, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 690, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 940, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 241, in _call_with_frames_removed\n  File \"/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/scipy/optimize/__init__.py\", line 409, in <module>\n    from ._optimize import *\n  File \"/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/scipy/optimize/_optimize.py\", line 31, in <module>\n    from numpy import (atleast_1d, eye, argmin, zeros, shape, squeeze,\nImportError: cannot import name 'Inf' from 'numpy' (/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/numpy/__init__.py)\n"
+        },
+        "scipy.spatial": {
+          "ok": false,
+          "error": "ValueError('numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject')",
+          "traceback": "Traceback (most recent call last):\n  File \"<string>\", line 11, in <module>\n  File \"/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/importlib/__init__.py\", line 126, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1204, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1176, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1147, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 690, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 940, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 241, in _call_with_frames_removed\n  File \"/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/scipy/spatial/__init__.py\", line 110, in <module>\n    from ._kdtree import *\n  File \"/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/scipy/spatial/_kdtree.py\", line 4, in <module>\n    from ._ckdtree import cKDTree, cKDTreeNode\n  File \"_ckdtree.pyx\", line 1, in init scipy.spatial._ckdtree\nValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n"
+        },
+        "gurobipy": {
+          "ok": true,
+          "version": [
+            12,
+            0,
+            3
+          ],
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/gurobipy/__init__.py"
+        },
+        "cv2": {
+          "ok": true,
+          "version": "4.12.0",
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/cv2/__init__.py"
+        },
+        "PIL": {
+          "ok": true,
+          "version": "11.3.0",
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/PIL/__init__.py"
+        },
+        "matplotlib": {
+          "ok": true,
+          "version": "3.10.7",
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/matplotlib/__init__.py"
+        },
+        "matplotlib.pyplot": {
+          "ok": true,
+          "version": null,
+          "file": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/matplotlib/pyplot.py"
+        }
+      },
+      "algorithm_import": {
+        "ok": true,
+        "has_gurobi": true
+      },
+      "returncode": 0,
+      "stderr": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/lib/python3.11/site-packages/scipy/__init__.py:132: UserWarning: A NumPy version >=1.21.6 and <1.28.0 is required for this version of SciPy (detected version 2.2.6)\n  warnings.warn(f\"A NumPy version >={np_minversion} and <{np_maxversion}\"\nFontconfig error: No writable cache directories\nFontconfig error: No writable cache directories\nFontconfig error: No writable cache directories\nMatplotlib is building the font cache; this may take a moment.\n",
+      "binary_file": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/bin/python: Mach-O 64-bit executable x86_64"
+    }
+  ],
+  "recommendation": {
+    "interpreter": "/Users/jiaqiwang/opt/anaconda3/bin/python",
+    "reason": "Only checked interpreter with functioning SciPy optimize/spatial, Gurobi 11.0.3, OpenCV, Pillow and Matplotlib imports together.",
+    "non_solver_runtime_checks": {
+      "opencv_resize": [
+        4,
+        4,
+        3
+      ],
+      "pillow_in_memory_png_bytes": 83,
+      "scipy_cdist": "passed"
+    },
+    "limitations": [
+      "This Intel x86_64 interpreter executes on an arm64 Mac via Rosetta; fresh timings should be reported with this environment.",
+      "Installed Pillow 7.2.0 is below requirements.txt Pillow>=10, but the runner image output API Image.fromarray(...).save(...) passed an in-memory PNG check.",
+      "These import and image checks do not verify the license or full paper experiments; solver validation is performed separately by root."
+    ],
+    "alternatives": {
+      "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/bin/python": "Imports SciPy/Gurobi12 but lacks cv2, required by Sign runner.",
+      "/opt/anaconda3/bin/python": "Native arm64 Python3.13; imports SciPy but lacks gurobipy and cv2.",
+      "/Users/jiaqiwang/opt/anaconda3/envs/ot311/bin/python": "Not usable: NumPy2.2.6/SciPy1.11.4 API and binary incompatibility causes optimize/spatial imports to fail."
+    }
+  }
+}

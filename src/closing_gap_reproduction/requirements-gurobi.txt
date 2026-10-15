@@ -1,0 +1,3 @@
+-r requirements.txt
+# Version reported in the paper; requires a compatible Python and your own license.
+gurobipy==11.0.3

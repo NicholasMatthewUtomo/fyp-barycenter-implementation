@@ -1,0 +1,54 @@
+--- originals/wb_bary_algorithms.py
++++ code/wb_bary_algorithms.py
+@@ -201,12 +201,12 @@
+     # Create column- (j) constraints once (they don’t change when we add rows)
+     for i, meas in enumerate(measures):
+         for j in range(n_list[i]):
+-            c = m.addConstr(gp.LinExpr(), GRB.EQUAL, float(meas.w[j]),
++            c = m.addConstr(gp.LinExpr() == float(meas.w[j]),
+                             name=f"col_i{i}_j{j}")
+             col_match_constrs[i].append(c)
+ 
+     # Create normalization constraint once; RHS=1
+-    norm_constr = m.addConstr(gp.LinExpr(), GRB.EQUAL, 1.0, name="norm")
++    norm_constr = m.addConstr(gp.LinExpr() == 1.0, name="norm")
+ 
+     # Objective accumulator (linear)
+     obj = gp.LinExpr()
+@@ -330,6 +330,11 @@
+             raise RuntimeError(f"RMP status={m.Status}")
+ 
+         snapshot_incumbent()
++
++        # A time-limited RMP may have a feasible solution but no optimal duals.
++        # Keep that solution; pricing requires an optimal RMP.
++        if m.Status == GRB.TIME_LIMIT:
++            break
+         
+         alpha, beta, gamma = extract_duals()
+         #picks, best_rc = price(alpha, beta, gamma, set(L))
+@@ -356,10 +361,11 @@
+ 
+     # One last optimize with remaining time (to polish)
+     rt = rem_time()
+-    if rt is not None or rt > 0:
+-        m.Params.TimeLimit = max(0.05, rem_time() or 1e9)
++    if rt is None or rt > 0:
++        if rt is not None:
++            m.Params.TimeLimit = rt
+         m.optimize()
+-        if not (m.Status == GRB.TIME_LIMIT and m.SolCount == 0):
++        if m.Status in (GRB.OPTIMAL, GRB.TIME_LIMIT) and m.SolCount > 0:
+             snapshot_incumbent()
+     # else:
+     #     m.optimize()
+@@ -394,7 +400,8 @@
+ 
+     obj_val = best["obj"]
+ 
+-    return z_full, Y_full, m.ObjVal, m #z_full, Y_full, (m.ObjVal if m.SolCount>0 else np.nan), m
++    # The returned objective must describe the same saved feasible solution.
++    return z_full, Y_full, obj_val, m
+ 
+ 
+ def solve_barycenter_lp_cg(

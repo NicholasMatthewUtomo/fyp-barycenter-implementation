@@ -1,0 +1,366 @@
+{
+  "status": "passed",
+  "scope": "Six tiny persistent-CG analytic checks in each of two existing licensed environments. No paper-scale training or full classification rerun.",
+  "environments": [
+    {
+      "scope": "Tiny analytic checks only; no paper-scale experiments",
+      "interpreter": "/Users/jiaqiwang/opt/anaconda3/bin/python",
+      "python": "3.8.3",
+      "platform": "macOS-10.16-x86_64-i386-64bit",
+      "status": "passed",
+      "tests": [
+        {
+          "case": "two_diracs",
+          "t": 1,
+          "time_limit_sec": null,
+          "status": "passed",
+          "expected_objective": 2.0,
+          "objective": 2.0,
+          "objective_from_returned_transports": 2.0,
+          "z": [
+            0.0,
+            1.0
+          ],
+          "S": [
+            [
+              0.0
+            ],
+            [
+              2.0
+            ]
+          ],
+          "Y": [
+            [
+              [
+                0.0
+              ],
+              [
+                1.0
+              ]
+            ],
+            [
+              [
+                0.0
+              ],
+              [
+                1.0
+              ]
+            ]
+          ],
+          "runtime_sec": 0.011303208000000065,
+          "gurobi_status": 2
+        },
+        {
+          "case": "two_diracs",
+          "t": 1,
+          "time_limit_sec": 5.0,
+          "status": "passed",
+          "expected_objective": 2.0,
+          "objective": 2.0,
+          "objective_from_returned_transports": 2.0,
+          "z": [
+            0.0,
+            1.0
+          ],
+          "S": [
+            [
+              0.0
+            ],
+            [
+              2.0
+            ]
+          ],
+          "Y": [
+            [
+              [
+                0.0
+              ],
+              [
+                1.0
+              ]
+            ],
+            [
+              [
+                0.0
+              ],
+              [
+                1.0
+              ]
+            ]
+          ],
+          "runtime_sec": 0.0011054169999999974,
+          "gurobi_status": 2
+        },
+        {
+          "case": "two_diracs",
+          "t": 2,
+          "time_limit_sec": null,
+          "status": "passed",
+          "expected_objective": 1.0,
+          "objective": 1.0,
+          "objective_from_returned_transports": 1.0,
+          "z": [
+            1.0
+          ],
+          "S": [
+            [
+              1.0
+            ]
+          ],
+          "Y": [
+            [
+              [
+                1.0
+              ]
+            ],
+            [
+              [
+                1.0
+              ]
+            ]
+          ],
+          "runtime_sec": 0.00047562499999997954,
+          "gurobi_status": 2
+        },
+        {
+          "case": "two_diracs",
+          "t": 2,
+          "time_limit_sec": 5.0,
+          "status": "passed",
+          "expected_objective": 1.0,
+          "objective": 1.0,
+          "objective_from_returned_transports": 1.0,
+          "z": [
+            1.0
+          ],
+          "S": [
+            [
+              1.0
+            ]
+          ],
+          "Y": [
+            [
+              [
+                1.0
+              ]
+            ],
+            [
+              [
+                1.0
+              ]
+            ]
+          ],
+          "runtime_sec": 0.00044999999999995044,
+          "gurobi_status": 2
+        },
+        {
+          "case": "add_missing_midpoint",
+          "status": "passed",
+          "objective": 1.0,
+          "z": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "objective_from_returned_transports": 1.0
+        },
+        {
+          "case": "exhausted_budget",
+          "time_limit_sec": 0,
+          "status": "passed",
+          "result": "RuntimeError: No feasible solution found before time limit.",
+          "runtime_sec": 0.00031529200000002255
+        }
+      ],
+      "numpy": "1.24.4",
+      "gurobi": "11.0.3",
+      "scipy": "1.10.1",
+      "module": "/Users/jiaqiwang/Documents/Codex/2026-09-14/c-a/outputs/closing_gap_reproduction/code/wb_bary_algorithms.py",
+      "license_usable": true
+    },
+    {
+      "scope": "Tiny analytic checks only; no paper-scale experiments",
+      "interpreter": "/Users/jiaqiwang/opt/anaconda3/envs/my_environment/bin/python",
+      "python": "3.10.6",
+      "platform": "macOS-15.6.1-x86_64-i386-64bit",
+      "status": "passed",
+      "tests": [
+        {
+          "case": "two_diracs",
+          "t": 1,
+          "time_limit_sec": null,
+          "status": "passed",
+          "expected_objective": 2.0,
+          "objective": 2.0,
+          "objective_from_returned_transports": 2.0,
+          "z": [
+            1.0,
+            0.0
+          ],
+          "S": [
+            [
+              0.0
+            ],
+            [
+              2.0
+            ]
+          ],
+          "Y": [
+            [
+              [
+                1.0
+              ],
+              [
+                0.0
+              ]
+            ],
+            [
+              [
+                1.0
+              ],
+              [
+                0.0
+              ]
+            ]
+          ],
+          "runtime_sec": 0.007525375112891197,
+          "gurobi_status": 2
+        },
+        {
+          "case": "two_diracs",
+          "t": 1,
+          "time_limit_sec": 5.0,
+          "status": "passed",
+          "expected_objective": 2.0,
+          "objective": 2.0,
+          "objective_from_returned_transports": 2.0,
+          "z": [
+            1.0,
+            0.0
+          ],
+          "S": [
+            [
+              0.0
+            ],
+            [
+              2.0
+            ]
+          ],
+          "Y": [
+            [
+              [
+                1.0
+              ],
+              [
+                0.0
+              ]
+            ],
+            [
+              [
+                1.0
+              ],
+              [
+                0.0
+              ]
+            ]
+          ],
+          "runtime_sec": 0.0017249591182917356,
+          "gurobi_status": 2
+        },
+        {
+          "case": "two_diracs",
+          "t": 2,
+          "time_limit_sec": null,
+          "status": "passed",
+          "expected_objective": 1.0,
+          "objective": 1.0,
+          "objective_from_returned_transports": 1.0,
+          "z": [
+            1.0
+          ],
+          "S": [
+            [
+              1.0
+            ]
+          ],
+          "Y": [
+            [
+              [
+                1.0
+              ]
+            ],
+            [
+              [
+                1.0
+              ]
+            ]
+          ],
+          "runtime_sec": 0.0006940839812159538,
+          "gurobi_status": 2
+        },
+        {
+          "case": "two_diracs",
+          "t": 2,
+          "time_limit_sec": 5.0,
+          "status": "passed",
+          "expected_objective": 1.0,
+          "objective": 1.0,
+          "objective_from_returned_transports": 1.0,
+          "z": [
+            1.0
+          ],
+          "S": [
+            [
+              1.0
+            ]
+          ],
+          "Y": [
+            [
+              [
+                1.0
+              ]
+            ],
+            [
+              [
+                1.0
+              ]
+            ]
+          ],
+          "runtime_sec": 0.0005515420343726873,
+          "gurobi_status": 2
+        },
+        {
+          "case": "add_missing_midpoint",
+          "status": "passed",
+          "objective": 1.0,
+          "z": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "objective_from_returned_transports": 1.0
+        },
+        {
+          "case": "exhausted_budget",
+          "time_limit_sec": 0,
+          "status": "passed",
+          "result": "RuntimeError: No feasible solution found before time limit.",
+          "runtime_sec": 0.00031529110856354237
+        }
+      ],
+      "numpy": "1.23.1",
+      "gurobi": "12.0.3",
+      "scipy": "1.11.1",
+      "module": "/Users/jiaqiwang/Documents/Codex/2026-09-14/c-a/outputs/closing_gap_reproduction/code/wb_bary_algorithms.py",
+      "license_usable": true
+    }
+  ],
+  "known_unusable_environment": {
+    "interpreter": "/Users/jiaqiwang/opt/anaconda3/envs/ot311/bin/python",
+    "numpy": "2.2.6",
+    "scipy": "1.11.4",
+    "gurobi": "12.0.3",
+    "reason": "SciPy sparse binary fails with installed NumPy; no changes made to that environment."
+  },
+  "compatibility_fix_verified": "Working package uses expression-style addConstr instead of removed multi-positional overload. Original source files were not changed."
+}

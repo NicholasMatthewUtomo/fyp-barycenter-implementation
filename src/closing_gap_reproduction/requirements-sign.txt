@@ -1,0 +1,3 @@
+-r requirements-gurobi.txt
+# Required for identical INTER_AREA resizing and BGR/RGB conversion in notebook.
+opencv-python>=4.8,<5

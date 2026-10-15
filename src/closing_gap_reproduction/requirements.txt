@@ -1,0 +1,6 @@
+# Portable data preparation, cached-result analysis, and small SciPy smoke tests.
+# These are compatibility requirements, not a recovered historical environment lock.
+numpy>=1.24,<3
+scipy>=1.10,<2
+Pillow>=10,<13
+matplotlib>=3.7,<4

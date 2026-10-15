@@ -1,0 +1,97 @@
+{
+  "kind": "reconstruction_from_historical_cached_scores",
+  "source": "C:\\Users\\Nicholas\\Documents\\University\\Academic\\Research\\fyp\\Barycenter_implementation\\closing_gap_reproduction\\data\\sign\\cached_classification_scores.json",
+  "selected_classes": [
+    "A",
+    "C",
+    "D"
+  ],
+  "runs": {
+    "t1_7200": {
+      "source_notebook": "Sign_testing.ipynb",
+      "source_cell_1based": 33,
+      "regularization": 0.01,
+      "classes": [
+        "A",
+        "C",
+        "D"
+      ],
+      "total": 75,
+      "correct": 72,
+      "per_class": {
+        "A": {
+          "correct": 25,
+          "total": 25
+        },
+        "C": {
+          "correct": 22,
+          "total": 25
+        },
+        "D": {
+          "correct": 25,
+          "total": 25
+        }
+      },
+      "confusion": {
+        "A": {
+          "A": 25,
+          "C": 0,
+          "D": 0
+        },
+        "C": {
+          "A": 0,
+          "C": 22,
+          "D": 3
+        },
+        "D": {
+          "A": 0,
+          "C": 0,
+          "D": 25
+        }
+      }
+    },
+    "hybrid3600": {
+      "source_notebook": "Sign_testing.ipynb",
+      "source_cell_1based": 34,
+      "regularization": 0.01,
+      "classes": [
+        "A",
+        "C",
+        "D"
+      ],
+      "total": 75,
+      "correct": 75,
+      "per_class": {
+        "A": {
+          "correct": 25,
+          "total": 25
+        },
+        "C": {
+          "correct": 25,
+          "total": 25
+        },
+        "D": {
+          "correct": 25,
+          "total": 25
+        }
+      },
+      "confusion": {
+        "A": {
+          "A": 25,
+          "C": 0,
+          "D": 0
+        },
+        "C": {
+          "A": 0,
+          "C": 25,
+          "D": 0
+        },
+        "D": {
+          "A": 0,
+          "C": 0,
+          "D": 25
+        }
+      }
+    }
+  }
+}
