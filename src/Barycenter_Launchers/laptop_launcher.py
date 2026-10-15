@@ -14,7 +14,7 @@ import time
 
 HERE = Path(__file__).resolve().parent
 PACKAGE = HERE.parent / 'closing_gap_reproduction'
-PYTHON = Path('/opt/anaconda3/bin/python')
+PYTHON = Path('/usr/bin/python3')
 RUNS = HERE / 'results'
 THREADS = 4
 

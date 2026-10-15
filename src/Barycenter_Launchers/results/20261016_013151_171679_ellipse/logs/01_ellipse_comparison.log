@@ -1,0 +1,5 @@
+/usr/bin/python3 -u /mnt/c/Users/Nicholas/Documents/University/Academic/Research/fyp/fyp-barycenter-implementation/src/Barycenter_Launchers/run_worker.py --threads 4 /mnt/c/Users/Nicholas/Documents/University/Academic/Research/fyp/fyp-barycenter-implementation/src/closing_gap_reproduction/scripts/run_ellipses.py --mode deterministic --output /mnt/c/Users/Nicholas/Documents/University/Academic/Research/fyp/fyp-barycenter-implementation/src/Barycenter_Launchers/results/20261016_013151_171679_ellipse/ellipses --solver mosek --threads 4 --t 1
+Running deterministic t=1, solver=mosek
+cost_length 10
+cost_time 0.040585994720458984
+Saved results: /mnt/c/Users/Nicholas/Documents/University/Academic/Research/fyp/fyp-barycenter-implementation/src/Barycenter_Launchers/results/20261016_013151_171679_ellipse/ellipses

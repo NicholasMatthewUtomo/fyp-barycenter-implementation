@@ -1,0 +1,46 @@
+{
+  "mode": "deterministic",
+  "input": "/mnt/c/Users/Nicholas/Documents/University/Academic/Research/fyp/fyp-barycenter-implementation/src/closing_gap_reproduction/data/ellipses/input_ellipse_data.pkl",
+  "input_sha256": "8c292cebe505b98e7e8c45b5ae16ed9624d4c9bc1befe376ef2f8d0e48b7ab49",
+  "marginals": 10,
+  "dimension": 2,
+  "atom_counts": [
+    180,
+    178,
+    162,
+    192,
+    162,
+    141,
+    167,
+    139,
+    169,
+    148
+  ],
+  "objective_convention": "mean_i W2_squared(barycenter, marginal_i)",
+  "experiments": [
+    {
+      "t": 1,
+      "subsets": 10,
+      "raw_candidates_before_deduplication": 1638,
+      "lp_variables_upper_bound": 2684682
+    }
+  ],
+  "solver_requested": "mosek",
+  "smoke_reduced_data": false,
+  "randomized_seeds": [],
+  "randomized_seed_provenance": "New protocol; published ten-trial sequence not recovered.",
+  "reference_available": true,
+  "reference_render_only": false,
+  "created_utc": "2026-10-15T17:31:51.623016+00:00",
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "gurobipy": "13.0.3",
+    "mosek": "11.2.6",
+    "matplotlib": "3.11.2"
+  },
+  "input_file": "input_ellipse_data.pkl",
+  "plot_convention": "Black support scatter for z > 1e-8; NPZ retains all masses."
+}
