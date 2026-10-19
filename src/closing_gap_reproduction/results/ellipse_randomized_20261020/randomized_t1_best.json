@@ -1,0 +1,53 @@
+{
+  "created_utc": "2026-10-19T18:38:43.673345+00:00",
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "gurobipy": null,
+    "mosek": "11.2.0",
+    "matplotlib": "3.11.2"
+  },
+  "input_sha256": "8c292cebe505b98e7e8c45b5ae16ed9624d4c9bc1befe376ef2f8d0e48b7ab49",
+  "input_file": "input_ellipse_data.pkl",
+  "objective_convention": "mean_i W2_squared(barycenter, marginal_i)",
+  "smoke_reduced_data": false,
+  "plot_convention": "Black support scatter for z > 1e-8; NPZ retains all masses.",
+  "solver": "mosek",
+  "solver_params": {
+    "Threads": 4
+  },
+  "status": "new_optimization",
+  "code_sha256": "9d73c5e12f677b66f324c4099156a48a374fc472209161ec3c1cdca803943633",
+  "paper_algorithm": 3,
+  "t": 1,
+  "best_seed": 1,
+  "all_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "total_trial_runtime_seconds": 137.93650150299072,
+  "runtime_field": "Time of selected trial only; total_trial_runtime_seconds sums all trials.",
+  "seed_provenance": "New reproducible protocol; published ten-trial sequence not recovered.",
+  "name": "randomized_t1_best",
+  "candidate_atoms": 162,
+  "active_atoms_threshold_1e_8": 130,
+  "total_mass": 1.0,
+  "minimum_mass": 0.0,
+  "arrays": "randomized_t1_best.npz",
+  "figure": "randomized_t1_best.png",
+  "objective": 0.027086422106141744,
+  "runtime": 16.296258449554443,
+  "selected_marginals_zero_based": [
+    4
+  ]
+}
