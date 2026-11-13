@@ -98,6 +98,10 @@ python scripts/run_mnist.py --digit 0 --t 1 --solver gurobi --output results/mni
 python scripts/run_mnist.py --digit 0 --t 2 --solver gurobi --output results/mnist
 # Repeat both commands for --digit 1 and --digit 2.
 
+# Paper Algorithm 4: deterministic W2 subset enumeration, using MOSEK.
+# Requires the mosek Python package and a working license.
+python scripts/run_mnist.py --digit 0 --t 1 --k 50 --solver mosek --threads 4 --output results/mnist_mosek
+
 # Explicit alternative: the current manuscript's multiset definition.
 python scripts/run_mnist.py --digit 0 --t 2 --candidate-rule paper-multisets --solver gurobi --output results/mnist_paper_definition
 ```

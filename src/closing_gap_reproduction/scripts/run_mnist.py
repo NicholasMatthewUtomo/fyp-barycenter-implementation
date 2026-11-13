@@ -45,7 +45,8 @@ def main():
     p.add_argument('--digit', type=int, choices=[0, 1, 2], required=True)
     p.add_argument('--t', type=int, choices=[1, 2], required=True)
     p.add_argument('--k', type=int, default=50, help='50 is the recovered paper setting; smaller values are demos')
-    p.add_argument('--solver', choices=['gurobi', 'scipy'], default='gurobi')
+    p.add_argument('--solver', choices=['gurobi', 'mosek', 'scipy'], default='gurobi')
+    p.add_argument('--threads', type=int, default=4, help='MOSEK thread count')
     p.add_argument('--candidate-rule',choices=['notebook-subsets','paper-multisets'],
                    default='notebook-subsets',help='Recover the source notebook or allow repeated measure indices as in the paper.')
     p.add_argument('--data', type=Path, default=ROOT/'data/mnist/first50_digits012.npz')
@@ -91,6 +92,10 @@ def main():
         p.error('gurobipy is unavailable. Install requirements-gurobi.txt and configure your own license. Use --inspect to examine the inputs.')
     if args.solver=='scipy' and not wb._HAS_SCIPY:
         p.error('SciPy is unavailable. Install requirements.txt before using --solver scipy.')
+    if args.solver=='mosek' and not wb._HAS_MOSEK:
+        p.error('MOSEK is unavailable; use an environment with mosek and a working license.')
+    if args.threads < 1:
+        p.error('--threads must be positive')
     if args.solver=='scipy' and dense_gib>2:
         p.error(f'the original SciPy implementation uses dense constraints (upper bound {dense_gib:.1f} GiB); use Gurobi for this size or run code/smoke_test.py')
     stem=f'digit{args.digit}_k{args.k}_t{args.t}_{args.candidate_rule}'
@@ -100,6 +105,8 @@ def main():
         p.error('output files for this digit/k/t already exist; choose another --output directory')
     started=time.perf_counter()
     params={'OutputFlag':0} if args.solver=='gurobi' else None
+    if args.solver=='mosek':
+        params={'Threads':args.threads}
     if args.candidate_rule == 'notebook-subsets':
         out=wb.algo2_W2_subset_enumeration(measures,t=args.t,prefer_solver=args.solver,
                                          params=params,seed=0,max_T=None,max_points_per_T=None)
@@ -115,6 +122,12 @@ def main():
                   validation='solver completed; historical paper runtime not asserted',
                   versions={n:importlib.metadata.version(n) for n in ['numpy','scipy','Pillow']})
     if args.solver=='gurobi': report['versions']['gurobipy']=importlib.metadata.version('gurobipy')
+    if args.solver=='mosek':
+        report['versions']['mosek']=importlib.metadata.version('Mosek')
+        report['threads']=args.threads
+    report['paper_algorithm']='Algorithm 4 (W2 deterministic subset enumeration)' if args.candidate_rule=='notebook-subsets' else 'paper multiset enumeration'
+    if not np.isfinite(out['z']).all() or out['z'].min() < -1e-8 or not np.isclose(out['z'].sum(),1.0,atol=1e-7):
+        raise RuntimeError('Barycenter mass validation failed')
     args.output.mkdir(parents=True,exist_ok=True)
     np.savez_compressed(args.output/(stem+'.npz'),S=out['S'],z=out['z'],training_indices=np.array(indices))
     # Save this exact result object, avoiding the notebook's out2/out3 mix-up.

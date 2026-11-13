@@ -1,0 +1,3 @@
+# Local dependencies and downloaded AffectNet source data.
+/.task_dependencies/
+/src/closing_gap_reproduction/data/kagglehub/
