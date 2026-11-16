@@ -1,0 +1,66 @@
+{
+  "experiment": "ECG200",
+  "samples": 200,
+  "points_per_heartbeat": 12,
+  "algorithm": "algo4_W1_subspace_enumeration",
+  "t": 2,
+  "solver": "mosek",
+  "status": "running",
+  "classes": {
+    "abnormal": {
+      "class_name": "abnormal",
+      "label": -1,
+      "samples": 67,
+      "partition_counts": {
+        "train": 31,
+        "test": 36
+      },
+      "support_points_per_measure": 12,
+      "dimension": 2,
+      "t": 2,
+      "solver": "mosek",
+      "candidate_count": 804,
+      "lp_variables": 647220,
+      "lp_constraints": 54673,
+      "cost_arrays_GiB": 0.004816174507141113,
+      "status": "completed",
+      "objective": 0.31649734069968016,
+      "runtime_seconds": 1877.5463240146637,
+      "wall_seconds": 1877.600909705,
+      "mass_sum": 1.0000000153134443,
+      "minimum_mass": -9.835414821826623e-09,
+      "support_size": 804,
+      "active_support_size": 67,
+      "used_T": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "normal": {
+      "class_name": "normal",
+      "label": 1,
+      "samples": 133,
+      "partition_counts": {
+        "train": 69,
+        "test": 64
+      },
+      "support_points_per_measure": 12,
+      "dimension": 2,
+      "t": 2,
+      "solver": "mosek",
+      "candidate_count": 1596,
+      "lp_variables": 2548812,
+      "lp_constraints": 213865,
+      "cost_arrays_GiB": 0.018978238105773926,
+      "status": "running",
+      "objective": null,
+      "runtime_seconds": null
+    }
+  },
+  "recorded_at": "2026-11-16T17:42:14.790689+00:00",
+  "input_verification": "passed: every original train/test heartbeat appears exactly once, with 12 retained time/amplitude coordinates and uniform 1/12 weights",
+  "last_observed_normal_rss_KiB": 2036472,
+  "note": "Snapshot only. Each class ecg200_summary.json is the authoritative updated status. The normal process remains running in WSL."
+}

@@ -1,0 +1,27 @@
+{
+  "scope": "Full ECG200 candidate generation; MOSEK smoke solve of first two heartbeats per class only",
+  "status": "passed",
+  "t": 2,
+  "max_grid": null,
+  "core_sha256": "7569b85efeba5b220127a05871e454a1d2b4ff454bc3f08714ece312d1ff8cac",
+  "classes": {
+    "normal": {
+      "full_samples": 133,
+      "full_candidates": 12768,
+      "smoke_samples": 2,
+      "smoke_objective": 0.14502289103851534,
+      "smoke_runtime_seconds": 0.1266789436340332,
+      "smoke_support_size": 192,
+      "smoke_mass": 0.9999999999999999
+    },
+    "abnormal": {
+      "full_samples": 67,
+      "full_candidates": 6432,
+      "smoke_samples": 2,
+      "smoke_objective": 0.06307420566712882,
+      "smoke_runtime_seconds": 0.07763075828552246,
+      "smoke_support_size": 192,
+      "smoke_mass": 1.0
+    }
+  }
+}

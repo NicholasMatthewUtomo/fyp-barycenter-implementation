@@ -1,0 +1,8 @@
+# Local Python dependencies and generated caches
+.task_dependencies/
+__pycache__/
+*.py[cod]
+.matplotlib/
+
+# Downloaded Kaggle dataset cache
+src/closing_gap_reproduction/data/kagglehub/

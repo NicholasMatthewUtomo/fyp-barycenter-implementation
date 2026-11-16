@@ -937,7 +937,8 @@ def _cartesian_sample(M_list: List[np.ndarray], m: int, seed: Optional[int] = No
         comb[:, j] = M_list[j][idx]
     return _dedup_rows(comb)
 
-def _S1_for_T(measures: Sequence[Measure], T: Sequence[int]) -> np.ndarray:
+def _S1_for_T(measures: Sequence[Measure], T: Sequence[int],
+              max_grid: Optional[int] = None, seed: Optional[int] = None) -> np.ndarray:
     """S_1^(T) = A_T × ∏_{ℓ∉T} M_ℓ with A_T from pooled U."""
     U, M_list = _U_and_M(measures); d = len(M_list)
     T = tuple(sorted(T)); comp = tuple(i for i in range(d) if i not in T)
@@ -997,7 +998,8 @@ def _S1_for_T(measures: Sequence[Measure], T: Sequence[int]) -> np.ndarray:
 
 def build_W1_candidates_subspace_sampling(measures: Sequence[Measure], t: int,
                                           seed: Optional[int] = None,
-                                          max_blocks: Optional[int] = None) -> Tuple[np.ndarray, Tuple[int,...]]:
+                                          max_blocks: Optional[int] = None,
+                                          max_grid: Optional[int] = None) -> Tuple[np.ndarray, Tuple[int,...]]:
     U, M_list = _U_and_M(measures); d = len(M_list)
     if not (0 <= t <= d): raise ValueError("t must be in [0,d]")
     rng = np.random.default_rng(seed); 
@@ -1015,7 +1017,8 @@ def build_W1_candidates_subspace_sampling(measures: Sequence[Measure], t: int,
 
 def build_W1_candidates_subspace_enumeration(measures: Sequence[Measure], t: int,
                                              max_T: Optional[int] = None, seed: Optional[int] = None,
-                                             max_blocks_per_T: Optional[int] = None) -> Tuple[np.ndarray, List[Tuple[int,...]]]:
+                                             max_blocks_per_T: Optional[int] = None,
+                                             max_grid: Optional[int] = None) -> Tuple[np.ndarray, List[Tuple[int,...]]]:
     U, M_list = _U_and_M(measures); d = len(M_list)
     if not (0 <= t <= d): raise ValueError("t must be in [0,d]")
     if t == 0:

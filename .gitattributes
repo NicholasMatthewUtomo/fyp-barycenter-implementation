@@ -1,0 +1,2 @@
+# Preserve PDF bytes even when a document has a mostly textual encoding.
+*.pdf binary

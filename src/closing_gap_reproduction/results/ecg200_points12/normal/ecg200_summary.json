@@ -1,0 +1,73 @@
+{
+  "experiment": "ECG200",
+  "algorithm": "algo4_W1_subspace_enumeration",
+  "t": 2,
+  "solver": "mosek",
+  "solver_parameters": null,
+  "algorithm_parameters": {
+    "max_T": null,
+    "seed": null,
+    "max_blocks_per_T": null
+  },
+  "samples": 200,
+  "partitions": {
+    "train": 100,
+    "test": 100
+  },
+  "coordinates": [
+    "normalized time j/95",
+    "unchanged ECG amplitude"
+  ],
+  "original_points_per_heartbeat": 96,
+  "support_points_per_measure": 12,
+  "retained_time_indices": [
+    0,
+    9,
+    17,
+    26,
+    35,
+    43,
+    52,
+    60,
+    69,
+    78,
+    86,
+    95
+  ],
+  "downsampled": true,
+  "atom_weight": 0.08333333333333333,
+  "marginal_weights": "equal 1/k within each class",
+  "cost": "existing W1 implementation: L1 distance in (time, amplitude)",
+  "core_sha256": "7569b85efeba5b220127a05871e454a1d2b4ff454bc3f08714ece312d1ff8cac",
+  "versions": {
+    "python": "3.12.3",
+    "numpy": "2.3.5",
+    "scipy": "1.17.1",
+    "matplotlib": "3.11.2",
+    "aeon": "1.6.0",
+    "mosek": "11.2.0"
+  },
+  "classes": {
+    "normal": {
+      "class_name": "normal",
+      "label": 1,
+      "samples": 133,
+      "partition_counts": {
+        "train": 69,
+        "test": 64
+      },
+      "support_points_per_measure": 12,
+      "dimension": 2,
+      "t": 2,
+      "solver": "mosek",
+      "candidate_count": 1596,
+      "lp_variables": 2548812,
+      "lp_constraints": 213865,
+      "cost_arrays_GiB": 0.018978238105773926,
+      "status": "running",
+      "objective": null,
+      "runtime_seconds": null
+    }
+  },
+  "status": "running"
+}

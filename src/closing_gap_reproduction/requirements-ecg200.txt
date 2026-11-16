@@ -1,0 +1,3 @@
+-r requirements.txt
+aeon>=1.3,<2
+mosek==11.2.0
