@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Local Python dependencies and generated caches
 .task_dependencies/
 __pycache__/
@@ -6,3 +7,8 @@ __pycache__/
 
 # Downloaded Kaggle dataset cache
 src/closing_gap_reproduction/data/kagglehub/
+=======
+# Local dependencies and downloaded AffectNet source data.
+/.task_dependencies/
+/src/closing_gap_reproduction/data/kagglehub/
+>>>>>>> 9319fc350bab71cc89062e0e6c148f689a2337fa
