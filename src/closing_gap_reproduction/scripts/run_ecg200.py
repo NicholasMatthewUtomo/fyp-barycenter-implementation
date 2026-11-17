@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""ECG200 class barycenters using the unchanged Algorithm 4, t=2, and MOSEK.
+"""ECG200 class barycenters using the unchanged Algorithm 4 and MOSEK.
 
-Load all training and testing heartbeats; retain their amplitudes and use
-normalized time and uniform atom weights. --points optionally reduces the
-number of support points per heartbeat while retaining every heartbeat.
+Default: k=10 heartbeats per class, 96 points per heartbeat, t=1. Load both
+training and testing data and select class examples in alternating train/test
+order (five from each split for k=10). Retain original amplitudes and use
+normalized time and uniform atom weights. --all-samples retains every heartbeat;
+--points optionally reduces the number of support points per heartbeat.
 Run --inspect to report input and LP sizes without attempting optimization.
 """
 from pathlib import Path
@@ -28,7 +30,20 @@ def write_json(path, report):
     path.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8")
 
 
-def plot_waveforms(path, waveforms, class_name, result=None, sample_indices=None):
+def select_class_indices(labels, splits, label, k):
+    """Select reproducible class inputs from both splits, without replacement."""
+    selected = np.flatnonzero(labels == label)
+    if k is None:
+        return selected
+    if k < 1 or k > len(selected):
+        raise ValueError(f"Require 1 <= k <= {len(selected)} for label {label}; got {k}")
+    by_split = [selected[splits[selected] == split] for split in ("train", "test")]
+    interleaved = [indices[j] for j in range(max(map(len, by_split)))
+                   for indices in by_split if j < len(indices)]
+    return np.asarray(interleaved[:k], dtype=int)
+
+
+def plot_waveforms(path, waveforms, class_name, result=None, sample_indices=None, t=1):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -58,14 +73,14 @@ def plot_waveforms(path, waveforms, class_name, result=None, sample_indices=None
             label="Barycenter atoms (size and color show mass)", zorder=3
         )
         point_label = f", {len(sample_indices)}-point inputs" if sample_indices is not None else ""
-        axes[0, 1].set_title(f"Algorithm 4, t=2{point_label}\nObjective={result['objective']:.6g}")
+        axes[0, 1].set_title(f"Algorithm 4, t={t}{point_label}\nObjective={result['objective']:.6g}")
         axes[0, 1].legend(fontsize=8, loc="lower right")
         fig.colorbar(scatter, ax=axes[0, 1], label="Probability mass")
     fig.savefig(path, dpi=180)
     plt.close(fig)
 
 
-def validate_result(result, measures):
+def validate_result(result, expected_support):
     S = np.asarray(result["S"])
     z = np.asarray(result["z"])
     if S.ndim != 2 or S.shape[1] != 2 or z.shape != (len(S),) or not len(S):
@@ -76,10 +91,8 @@ def validate_result(result, measures):
         raise ValueError("Barycenter weights must be nonnegative and sum to one")
     if not np.isfinite(result["objective"]) or result["objective"] < -1e-8:
         raise ValueError("Invalid barycenter objective")
-    # With d=t=2, the unchanged candidate generator should return the pooled
-    # input support with its existing 12-decimal deduplication.
-    if not np.array_equal(S, wb._union_support_points(measures)):
-        raise ValueError("Unexpected t=2 candidate support")
+    if not np.array_equal(S, expected_support):
+        raise ValueError("Result support differs from the existing Algorithm 4 candidate generator")
     return dict(mass_sum=float(z.sum()), minimum_mass=float(z.min()),
                 support_size=len(z), active_support_size=int((z > 1e-12).sum()))
 
@@ -87,13 +100,26 @@ def validate_result(result, measures):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--data", type=Path, default=ROOT / "data/ecg200")
-    p.add_argument("--output", type=Path, default=ROOT / "results/ecg200")
+    p.add_argument("--output", type=Path,
+                   help="Results directory; default name includes k, point count, and t")
+    selection = p.add_mutually_exclusive_group()
+    selection.add_argument("--k", type=int, default=10,
+                           help="Heartbeats per class, alternating train/test; default 10")
+    selection.add_argument("--all-samples", action="store_const", const=None, dest="k",
+                           help="Use every heartbeat in each selected class instead of k examples")
+    p.add_argument("--t", type=int, choices=(1, 2), default=1,
+                   help="Algorithm 4 subspace dimension; default 1")
     p.add_argument("--points", type=int, choices=range(2, 97), default=96, metavar="2..96",
                    help="Support points per heartbeat; default 96 retains all original points")
     p.add_argument("--class", dest="class_name", choices=("both", "normal", "abnormal"),
                    default="both", help="Run one class independently, or both (default)")
     p.add_argument("--inspect", action="store_true", help="Load and validate inputs; no solve or result writes")
     args = p.parse_args()
+    if args.k is not None and args.k < 1:
+        p.error("--k must be a positive integer")
+    if args.output is None:
+        k_label = "all" if args.k is None else args.k
+        args.output = ROOT / f"results/ecg200_k{k_label}_n{args.points}_t{args.t}"
     if not args.inspect:
         if args.output.exists() and not args.output.is_dir():
             p.error("--output must be a directory")
@@ -109,10 +135,13 @@ def main():
         except importlib.metadata.PackageNotFoundError:
             versions[package] = None
     summary = dict(
-        experiment="ECG200", algorithm="algo4_W1_subspace_enumeration", t=2,
+        experiment="ECG200", algorithm="algo4_W1_subspace_enumeration", t=args.t,
         solver="mosek", solver_parameters=None,
         algorithm_parameters=dict(max_T=None, seed=None, max_blocks_per_T=None),
-        samples=len(waveforms), partitions={s: int((splits == s).sum()) for s in ("train", "test")},
+        dataset_samples=len(waveforms),
+        dataset_partitions={s: int((splits == s).sum()) for s in ("train", "test")},
+        samples=0, partitions={"train": 0, "test": 0}, k_per_class=args.k,
+        selection="all class samples" if args.k is None else "first k in alternating train/test order, train first",
         coordinates=["normalized time j/95", "unchanged ECG amplitude"],
         original_points_per_heartbeat=96, support_points_per_measure=args.points,
         retained_time_indices=sample_indices.tolist(), downsampled=args.points < 96,
@@ -128,16 +157,25 @@ def main():
     for class_name, label in (("normal", 1), ("abnormal", -1)):
         if args.class_name != "both" and class_name != args.class_name:
             continue
-        selected = np.flatnonzero(labels == label)
+        try:
+            selected = select_class_indices(labels, splits, label, args.k)
+        except ValueError as exc:
+            p.error(str(exc))
         amplitudes = waveforms[selected]
         measures = waveforms_to_measures(amplitudes, points=args.points)
-        # For this d=t=2 case, all input support points are the candidates.
-        # This estimate does not replace the candidate generator used by Algo4.
-        candidate_count = len(wb._union_support_points(measures))
+        # Count the actual uncapped candidates using the same existing helper
+        # called inside Algorithm 4. In 2D, t=1 creates a Cartesian grid;
+        # t=2 returns the pooled input support.
+        candidates, used_T = wb.build_W1_candidates_subspace_enumeration(measures, t=args.t)
+        candidate_count = len(candidates)
         report = dict(
             class_name=class_name, label=label, samples=len(measures),
+            k=len(measures), available_samples=int((labels == label).sum()),
             partition_counts={s: int((splits[selected] == s).sum()) for s in ("train", "test")},
-            support_points_per_measure=args.points, dimension=2, t=2, solver="mosek",
+            combined_indices=selected.tolist(), split_indices=indices[selected].tolist(),
+            splits=splits[selected].tolist(),
+            support_points_per_measure=args.points, dimension=2, t=args.t, solver="mosek",
+            used_T=[list(T) for T in used_T],
             candidate_count=candidate_count,
             lp_variables=candidate_count * (args.points * len(measures) + 1),
             lp_constraints=len(measures) * candidate_count + args.points * len(measures) + 1,
@@ -146,9 +184,12 @@ def main():
             objective=None, runtime_seconds=None
         )
         summary["classes"][class_name] = report
+        summary["samples"] += len(selected)
+        for split, count in report["partition_counts"].items():
+            summary["partitions"][split] += count
         if args.inspect:
             continue
-        stem = f"ecg200_{class_name}_k{len(measures)}_n{args.points}_algo4_t2_mosek"
+        stem = f"ecg200_{class_name}_k{len(measures)}_n{args.points}_algo4_t{args.t}_mosek"
         np.savez_compressed(
             args.output / (stem + "_inputs.npz"), waveforms=amplitudes,
             X=np.stack([m.X for m in measures]), w=np.stack([m.w for m in measures]),
@@ -157,20 +198,20 @@ def main():
             sampled_waveforms=amplitudes[:, sample_indices]
         )
         plot_waveforms(args.output / (stem + "_inputs.png"), amplitudes, class_name,
-                       sample_indices=sample_indices)
+                       sample_indices=sample_indices, t=args.t)
         report["status"] = "running"
         summary["status"] = "running"
         write_json(args.output / (stem + ".json"), report)
         write_json(args.output / "ecg200_summary.json", summary)
-        print(f"{class_name}: {len(measures)} heartbeats, {args.points} points each, "
+        print(f"{class_name}: t={args.t}, {len(measures)} heartbeats, {args.points} points each, "
               f"{candidate_count} candidates, {report['lp_variables']} LP variables", flush=True)
         started = time.perf_counter()
         try:
             # Keep all Algorithm 4 and MOSEK defaults. In particular, do not
             # cap candidates, patch helpers, select PDLP, or use another solver.
-            result = wb.algo4_W1_subspace_enumeration(measures, t=2, prefer_solver="mosek")
+            result = wb.algo4_W1_subspace_enumeration(measures, t=args.t, prefer_solver="mosek")
             report["wall_seconds"] = time.perf_counter() - started
-            report.update(validate_result(result, measures))
+            report.update(validate_result(result, candidates))
             report.update(status="completed", objective=float(result["objective"]),
                           runtime_seconds=float(result["runtime"]),
                           used_T=[list(T) for T in result["used_T"]])
@@ -184,7 +225,7 @@ def main():
                        np.column_stack((result["S"], result["z"])), delimiter=",",
                        header="normalized_time,ecg_amplitude,probability_weight", comments="")
             plot_waveforms(args.output / (stem + ".png"), amplitudes, class_name, result,
-                           sample_indices=sample_indices)
+                           sample_indices=sample_indices, t=args.t)
         except Exception as exc:
             failures += 1
             report.update(status="failed", wall_seconds=time.perf_counter() - started,

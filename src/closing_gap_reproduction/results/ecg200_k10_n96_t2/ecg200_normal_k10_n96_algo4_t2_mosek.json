@@ -1,0 +1,69 @@
+{
+  "class_name": "normal",
+  "label": 1,
+  "samples": 10,
+  "k": 10,
+  "available_samples": 133,
+  "partition_counts": {
+    "train": 5,
+    "test": 5
+  },
+  "combined_indices": [
+    1,
+    100,
+    4,
+    101,
+    5,
+    102,
+    8,
+    103,
+    9,
+    105
+  ],
+  "split_indices": [
+    1,
+    0,
+    4,
+    1,
+    5,
+    2,
+    8,
+    3,
+    9,
+    5
+  ],
+  "splits": [
+    "train",
+    "test",
+    "train",
+    "test",
+    "train",
+    "test",
+    "train",
+    "test",
+    "train",
+    "test"
+  ],
+  "support_points_per_measure": 96,
+  "dimension": 2,
+  "t": 2,
+  "solver": "mosek",
+  "used_T": [
+    [
+      0,
+      1
+    ]
+  ],
+  "candidate_count": 960,
+  "lp_variables": 922560,
+  "lp_constraints": 10561,
+  "cost_arrays_GiB": 0.006866455078125,
+  "status": "completed",
+  "objective": 0.16840022480512415,
+  "runtime_seconds": 188.57182216644287,
+  "wall_seconds": 188.57517766899997,
+  "mass_sum": 1.0000000072821909,
+  "minimum_mass": -6.45973922867874e-09,
+  "support_size": 960,
+  "active_support_size": 306
+}

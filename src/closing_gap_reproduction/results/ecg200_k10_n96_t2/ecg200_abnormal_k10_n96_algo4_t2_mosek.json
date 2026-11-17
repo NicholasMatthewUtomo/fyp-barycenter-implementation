@@ -1,0 +1,69 @@
+{
+  "class_name": "abnormal",
+  "label": -1,
+  "samples": 10,
+  "k": 10,
+  "available_samples": 67,
+  "partition_counts": {
+    "train": 5,
+    "test": 5
+  },
+  "combined_indices": [
+    0,
+    104,
+    2,
+    109,
+    3,
+    110,
+    6,
+    112,
+    7,
+    113
+  ],
+  "split_indices": [
+    0,
+    4,
+    2,
+    9,
+    3,
+    10,
+    6,
+    12,
+    7,
+    13
+  ],
+  "splits": [
+    "train",
+    "test",
+    "train",
+    "test",
+    "train",
+    "test",
+    "train",
+    "test",
+    "train",
+    "test"
+  ],
+  "support_points_per_measure": 96,
+  "dimension": 2,
+  "t": 2,
+  "solver": "mosek",
+  "used_T": [
+    [
+      0,
+      1
+    ]
+  ],
+  "candidate_count": 960,
+  "lp_variables": 922560,
+  "lp_constraints": 10561,
+  "cost_arrays_GiB": 0.006866455078125,
+  "status": "completed",
+  "objective": 0.2127772202426059,
+  "runtime_seconds": 199.36879205703735,
+  "wall_seconds": 199.37410320499998,
+  "mass_sum": 1.0000000077941311,
+  "minimum_mass": -9.805894702240132e-09,
+  "support_size": 960,
+  "active_support_size": 285
+}

@@ -1,0 +1,3 @@
+normal: t=1, 10 heartbeats, 96 points each, 92160 candidates, 88565760 LP variables
+cost_length 10
+cost_time 3.67805814743042
