@@ -27,7 +27,8 @@ Author: ChatGPT
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Sequence, Tuple, Optional, Dict, Union
-import itertools, math, time
+import itertools, math, os, subprocess, tempfile, time
+from pathlib import Path
 import numpy as np
 
 # Optional solvers
@@ -752,6 +753,216 @@ def solve_barycenter_lp_mosek(C_list: List[np.ndarray], measures: Sequence[Measu
 
     return z, y_list, objective, {"solver": "MOSEK", "status": str(status)}
 
+# ---------------------------------------------------------------------------
+# D-PDLP (GPU-accelerated PDLP) solver
+# ---------------------------------------------------------------------------
+
+def _write_barycenter_mps(C_list: List[np.ndarray], measures: Sequence[Measure],
+                          mps_path: Path):
+    """Write the fixed-support barycenter LP to MPS format for D-PDLP.
+
+    LP:
+      min (1/k) * sum_i <C_i, y_i>
+      s.t.  y_i 1 = z,  y_i^T 1 = w_i,  z >= 0, y_i >= 0,  sum z = 1
+
+    Variable names: z_0..z_{s-1}, y_i_l_j for each measure i, row l, col j.
+    Row names: OBJ, row_match_i_l, col_match_i_j, NORM.
+    """
+    k = len(C_list)
+    s = C_list[0].shape[0]
+    n_list = [Ci.shape[1] for Ci in C_list]
+
+    def z_name(l: int) -> str:
+        return f"z_{l}"
+
+    def y_name(i: int, l: int, j: int) -> str:
+        return f"y_{i}_{l}_{j}"
+
+    def row_match_name(i: int, l: int) -> str:
+        return f"row_match_{i}_{l}"
+
+    def col_match_name(i: int, j: int) -> str:
+        return f"col_match_{i}_{j}"
+
+    lines: list[str] = []
+    lines.append("NAME          BARYCENTER")
+    lines.append("ROWS")
+    lines.append(" N  OBJ")
+
+    # Row-match equality rows: sum_j y_i[l,j] - z_l = 0
+    for i in range(k):
+        for l in range(s):
+            lines.append(f" E  {row_match_name(i, l)}")
+
+    # Col-match equality rows: sum_l y_i[l,j] = w_i[j]
+    for i in range(k):
+        for j in range(n_list[i]):
+            lines.append(f" E  {col_match_name(i, j)}")
+
+    # Normalization: sum_l z_l = 1
+    lines.append(" E  NORM")
+
+    lines.append("COLUMNS")
+
+    # Z variables (objective coefficient = 0)
+    for l in range(s):
+        lines.append(f"    {z_name(l)}       OBJ        0.0")
+        for i in range(k):
+            lines.append(f"    {z_name(l)}       {row_match_name(i, l)}   -1.0")
+        lines.append(f"    {z_name(l)}       NORM        1.0")
+
+    # Y variables (objective coefficient = C_i[l,j] / k)
+    for i in range(k):
+        for l in range(s):
+            for j in range(n_list[i]):
+                cost = float(C_list[i][l, j]) / k
+                lines.append(f"    {y_name(i, l, j)}   OBJ        {cost:.15e}")
+                lines.append(f"    {y_name(i, l, j)}   {row_match_name(i, l)}   1.0")
+                lines.append(f"    {y_name(i, l, j)}   {col_match_name(i, j)}   1.0")
+
+    lines.append("RHS")
+    # Col-match RHS: w_i[j]
+    for i in range(k):
+        for j in range(n_list[i]):
+            lines.append(f"    RHS       {col_match_name(i, j)}   {float(measures[i].w[j]):.15e}")
+    # Norm RHS: 1.0
+    lines.append(f"    RHS       NORM        1.0")
+
+    lines.append("BOUNDS")
+    lines.append("ENDATA")
+
+    mps_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _parse_dpdlp_solution(sol_path: Path, s: int, n_list: List[int],
+                          k: int) -> Tuple[np.ndarray, List[np.ndarray], float]:
+    """Parse D-PDLP solution output.
+
+    Expected format: one "variable_name value" per line (free format).
+    If D-PDLP uses a different output format, adjust this parser accordingly.
+    """
+    solution: dict[str, float] = {}
+    objective: float | None = None
+
+    with open(sol_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split()
+            if len(parts) >= 2:
+                try:
+                    var_name = parts[0]
+                    var_value = float(parts[1])
+                    if var_name.lower() in ("obj", "objective", "cost"):
+                        objective = var_value
+                    else:
+                        solution[var_name] = var_value
+                except ValueError:
+                    continue
+
+    # Extract z values
+    z = np.zeros(s, dtype=np.float64)
+    for l in range(s):
+        z[l] = solution.get(f"z_{l}", 0.0)
+
+    # Extract y values
+    y_list: List[np.ndarray] = []
+    for i in range(k):
+        Yi = np.zeros((s, n_list[i]), dtype=np.float64)
+        for l in range(s):
+            for j in range(n_list[i]):
+                Yi[l, j] = solution.get(f"y_{i}_{l}_{j}", 0.0)
+        y_list.append(Yi)
+
+    # If objective not in solution file, recompute from primal
+    if objective is None:
+        total = 0.0
+        for i, (Ci, Yi) in enumerate(zip(C_list, y_list)):
+            total += float(np.sum(Ci * Yi)) / k
+        objective = total
+
+    return z, y_list, objective
+
+
+def solve_barycenter_lp_dpdlp(
+    C_list: List[np.ndarray],
+    measures: Sequence[Measure],
+    params: Optional[Dict[str, Union[int, float, str]]] = None,
+) -> Tuple[np.ndarray, List[np.ndarray], float, dict]:
+    """Solve the fixed-support barycenter LP using D-PDLP (GPU-accelerated PDLP).
+
+    Writes the LP to MPS format, invokes the D-PDLP binary as a subprocess,
+    and parses the solution back into z, y_list, objective.
+
+    Args:
+        C_list: list of cost matrices C_i of shape (s, n_i)
+        measures: sequence of Measure objects with attributes .X and .w
+        params: optional dict with keys:
+            - "dpdlp_binary": path to D-PDLP executable (default: "dpdlp")
+            - "dpdlp_work_dir": directory for temp MPS/solution files
+            - "time_limit": solver time limit in seconds (default: 300)
+            - "dpdlp_args": extra CLI args passed to D-PDLP
+
+    Returns:
+        z: (s,) barycenter weights
+        y_list: list of (s, n_i) transport plans
+        objective: final objective value
+        solver_info: dict with solver name and binary path
+    """
+    if params is None:
+        params = {}
+
+    dpdlp_binary = str(params.get("dpdlp_binary", "dpdlp"))
+    time_limit = float(params.get("time_limit", 300.0))
+    work_dir = Path(params.get("dpdlp_work_dir", tempfile.gettempdir()))
+    work_dir.mkdir(parents=True, exist_ok=True)
+    extra_args = params.get("dpdlp_args", [])
+
+    k = len(C_list)
+    s = C_list[0].shape[0]
+    n_list = [Ci.shape[1] for Ci in C_list]
+    for Ci, m in zip(C_list, measures):
+        assert Ci.shape == (s, m.X.shape[0])
+
+    mps_path = work_dir / f"barycenter_dpdlp_{os.getpid()}.mps"
+    sol_path = work_dir / f"barycenter_dpdlp_{os.getpid()}.sol"
+
+    try:
+        _write_barycenter_mps(C_list, measures, mps_path)
+
+        # Build D-PDLP command line
+        cmd = [dpdlp_binary, str(mps_path), str(sol_path)]
+        if isinstance(extra_args, (list, tuple)):
+            cmd.extend(str(a) for a in extra_args)
+        # Common time-limit flag; adjust if D-PDLP uses a different flag
+        cmd.extend(["--time-limit", str(time_limit)])
+
+        result = subprocess.run(
+            cmd, capture_output=True, text=True,
+            timeout=time_limit + 60, cwd=str(work_dir)
+        )
+
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"D-PDLP failed (exit {result.returncode}): {result.stderr}"
+            )
+
+        z, y_list, objective = _parse_dpdlp_solution(sol_path, s, n_list, k)
+
+        return z, y_list, float(objective), {
+            "solver": "D-PDLP",
+            "binary": dpdlp_binary,
+        }
+
+    finally:
+        for p in [mps_path, sol_path]:
+            try:
+                p.unlink()
+            except FileNotFoundError:
+                pass
+
+
 def solve_barycenter_lp(C_list: List[np.ndarray], measures: Sequence[Measure],
                         prefer: str = "gurobi", params: Optional[Dict[str,Union[int,float]]] = None):
     if prefer == "gurobi":
@@ -763,6 +974,8 @@ def solve_barycenter_lp(C_list: List[np.ndarray], measures: Sequence[Measure],
     if prefer == "scipy":
         if _HAS_SCIPY: return solve_barycenter_lp_scipy(C_list, measures)
         raise ImportError("scipy not available")
+    if prefer == "dpdlp":
+        return solve_barycenter_lp_dpdlp(C_list, measures, params)
     raise ValueError(f"Unknown LP solver: {prefer}")
 
 
